@@ -33,11 +33,11 @@ jobs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
       - name: Get root directories
         id: dirs
-        uses: clowdhaus/terraform-composite-actions/directories@v1.4.1
+        uses: clowdhaus/terraform-composite-actions/directories@dad7542ba1e86df3de742805b4e7e1e653baa468 # v1.4.1
 
   preCommitMinVersions:
     name: Min TF pre-commit
@@ -51,9 +51,9 @@ jobs:
         run: rm -rf $(which terraform)
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
         id: changes
         with:
           # We only need to check Terraform files for the current directory
@@ -68,7 +68,7 @@ jobs:
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
-        uses: actions/cache@v3
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
         if: steps.changes.outputs.src== 'true'
         with:
           path: ${{ env.TERRAFORM_DOCS_VERSION }}
@@ -76,14 +76,14 @@ jobs:
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Terraform min/max versions
-        uses: clowdhaus/terraform-min-max@v1.0.7
+        uses: clowdhaus/terraform-min-max@c4ef1b77f2d5d4ffab715bedc4a3dbe375ff3a68 # v1.0.7
         if: steps.changes.outputs.src== 'true'
         id: minMax
         with:
           directory: ${{ matrix.directory }}
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@b054f71f178f011870dda7aac713f1fc9d8e39b2 # v1.6.0
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory !=  '.' && steps.changes.outputs.src== 'true' }}
         with:
@@ -91,7 +91,7 @@ jobs:
           args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@b054f71f178f011870dda7aac713f1fc9d8e39b2 # v1.6.0
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory ==  '.' && steps.changes.outputs.src== 'true' }}
         with:
@@ -107,9 +107,9 @@ jobs:
         run: rm -rf $(which terraform)
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
         id: changes
         with:
           filters: |
@@ -121,7 +121,7 @@ jobs:
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
-        uses: actions/cache@v3
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
         if: steps.changes.outputs.src== 'true'
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
@@ -134,11 +134,11 @@ jobs:
 
       - name: Terraform min/max versions
         id: minMax
-        uses: clowdhaus/terraform-min-max@v1.0.7
+        uses: clowdhaus/terraform-min-max@c4ef1b77f2d5d4ffab715bedc4a3dbe375ff3a68 # v1.0.7
         if: steps.changes.outputs.src== 'true'
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@b054f71f178f011870dda7aac713f1fc9d8e39b2 # v1.6.0
         if: steps.changes.outputs.src== 'true'
         with:
           terraform-version: ${{ steps.minMax.outputs.maxVersion }}
