@@ -14,9 +14,5 @@ terraform {
       source  = "grafana/grafana"
       version = ">= 1.25.0"
     }
-    http = {
-      source  = "hashicorp/http"
-      version = ">= 3.3.0"
-    }
   }
 }

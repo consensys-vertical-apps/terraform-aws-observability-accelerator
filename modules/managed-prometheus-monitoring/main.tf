@@ -22,17 +22,9 @@ resource "grafana_data_source" "cloudwatch" {
   })
 }
 
-data "http" "dashboard" {
-  url = "https://raw.githubusercontent.com/aws-observability/aws-observability-accelerator/a72787328e493c4628680487e3c885fc395d1c56/artifacts/grafana-dashboards/amp/amp-dashboard.json"
-
-  request_headers = {
-    Accept = "application/json"
-  }
-}
-
 resource "grafana_dashboard" "this" {
   folder      = var.dashboards_folder_id
-  config_json = data.http.dashboard.response_body
+  config_json = file("${path.module}/amp-dashboard.json")
 }
 
 module "billing" {
